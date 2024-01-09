@@ -13,7 +13,7 @@ services:
 
   web:
     build: ./backend
-    command: sh -c "python manage.py runserver 0.0.0.0:8000 && python manage.py migrate"
+    command: sh -c "/wait && python manage.py runserver 0.0.0.0:8000 && python manage.py migrate"
     volumes:
       - .:/backend
     ports:
