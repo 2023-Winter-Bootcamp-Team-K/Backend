@@ -48,4 +48,6 @@ services:
       - ./backend:/app  # 현재 디렉토리를 backend로 변경하여, backend 코드를 컨테이너의 /app으로 마운트
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings  # Django 설정 환경 변수 추가
+    env_file:
+      - .env
 
