@@ -98,7 +98,6 @@ class ChatRoomCreateView(APIView):
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
 
-
 class ChatRoomCloseView(APIView):
     @swagger_auto_schema(
         operation_id="채팅방 종료",
