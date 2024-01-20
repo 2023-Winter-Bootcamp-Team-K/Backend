@@ -179,7 +179,6 @@ class ChatRoomListView(APIView):
         }
         return Response(data)
 
-
 class ChatRoomImageUploadView(APIView):
     parser_classes = [MultiPartParser]
     @swagger_auto_schema(
