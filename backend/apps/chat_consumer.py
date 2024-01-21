@@ -124,7 +124,7 @@ class ChatConsumer(WebsocketConsumer):
                 upload_task = upload_audio_to_s3_task.delay(binary_audio_data)
 
 
-                # 비동기 작업 실행
+                # stt 비동기 작업 실행
                 task = speech_to_text_task.delay(audio_data)
                 # 작업 완료 후 콜백 함수 연결
                 task.then(self.on_task_completion(task,upload_task))
@@ -179,15 +179,12 @@ class ChatConsumer(WebsocketConsumer):
 
         for chunk in self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=self.conversation,
+                messages=self.conversation, # 지금까지  누적대화를 보내줌
                 temperature=0.9,
                 stream=True,
         ):
             finish_reason = chunk.choices[0].finish_reason
             response_message = chunk.choices[0].delta.content
-            # 메시지 조각를 클라이언트로 바로 전송
-            #self.send(json.dumps({"event": "conversation",
-            #                      "data": {"message": response_message, "finish_reason": finish_reason}}))
             self.gpt_text_send(response_message, finish_reason)
             if finish_reason == "stop":
                 break
@@ -238,6 +235,7 @@ class ChatConsumer(WebsocketConsumer):
 
         
     def child_conversation(self, content):
+        #문자열 content를 처리하고, 그 내용을 조각으로 나누어 특정 함수(user_text_send)를 통해 각 조각을 전송하는 기능
         messages = ""
         for index, chunk in enumerate(content):
             is_last_char = "incomplete"
@@ -253,7 +251,6 @@ class ChatConsumer(WebsocketConsumer):
 
             messages += chunk
             time.sleep(0.05)
-
 
     def pick_random_question(self, username):
         pick_question = []
@@ -322,6 +319,8 @@ class ChatConsumer(WebsocketConsumer):
         self.send(json.dumps({"event": "conversation",
                               "data": { "character": "quokka", "message": message, "finish_reason": finish_reason}}))
 
+
+    #json형식으로 한글자씩 보내줌
     def user_text_send(self, message,finish_reason):
         if finish_reason is None:
             finish_reason = "incomplete"
@@ -383,12 +382,10 @@ class ChatConsumer(WebsocketConsumer):
 
     def on_task_completion(self, result, audio_file_url):
         text_result = result.get(timeout=10)  # 결과를 기다림
-        self.child_conversation(text_result)
-        self.add_answer(text_result)
-
+        self.child_conversation(text_result) # 한글자씩 client한테 보냄
+        self.add_answer(text_result) #대화기록 저장
         # STT 결과를 기반으로 후속 처리 진행
-        question = self.continue_conversation(self.chatroom)  # 실패지점 !
-
+        question = self.continue_conversation(self.chatroom) #gpt대답
         self.audio_send(question)
         self.add_question(question=question)
         self.save_user_answer(question=self.present_question, content=text_result, url=audio_file_url)
