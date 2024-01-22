@@ -46,6 +46,7 @@ class DiaryCreateView(APIView):
 
             diary = Diary.objects.create(
                 user=request.user,
+                chat_room=chat_room,
                 mood=mood,
                 content=summary,
                 img_url=img_url,
@@ -66,15 +67,17 @@ class DiaryCreateView(APIView):
 
 
 class DiaryView(APIView):
-    def get_object(self, pk):
-        try:
-            return Diary.objects.get(pk=pk)
-        except Diary.DoesNotExist:
-            raise Http404
-
     @swagger_auto_schema(operation_id="일기 조회")
     def get(self, request, pk, format=None):
-        diary = self.get_object(pk)
+        try:
+            diary = Diary.objects.get(pk=pk)
+            chat_room_id = diary.chat_room.id if diary.chat_room else None
+        except Diary.DoesNotExist:
+            # 일기가 아직 준비되지 않았음을 나타내는 응답
+            return Response({
+                "status": "200",
+                "message": "일기가 생성 중 입니다."
+            })
 
         diary_data = {
             "status": "200",
@@ -84,9 +87,11 @@ class DiaryView(APIView):
             "imageURL": diary.img_url,
             "username": diary.user.username,
             "captureURL": diary.capture_url,
-            "mood": diary.mood
+            "mood": diary.mood,
+            "chat_room_id": chat_room_id
         }
         return Response(diary_data)
+
 class DiaryListView(APIView):
     @swagger_auto_schema(
         operation_id="일기 일정 조회"

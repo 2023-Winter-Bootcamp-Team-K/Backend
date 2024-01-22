@@ -318,14 +318,14 @@ class ChatConsumer(WebsocketConsumer):
         if finish_reason is None:
             finish_reason = "incomplete"
         self.send(json.dumps({"event": "conversation",
-                              "data": { "character": "quokka", "message": message, "finish_reason": finish_reason}}))
+                              "data": {"character": "quokka", "message": message, "finish_reason": finish_reason}}))
 
     def user_text_send(self, message,finish_reason):
         if finish_reason is None:
             finish_reason = "incomplete"
         self.send(json.dumps({"event": "conversation",
 
-                              "data": { "character": "child", "message": message, "finish_reason": finish_reason}}))
+                              "data": {"character": "child", "message": message, "finish_reason": finish_reason}}))
 
     def end_conversation(self):
         # 대화 요약 생성
