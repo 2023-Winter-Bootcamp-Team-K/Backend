@@ -10,7 +10,9 @@ from .models import Diary
 from django.http import Http404
 from .utils import *
 from apps.models import ChatRoom
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class DiaryCreateView(APIView):
     @swagger_auto_schema(
@@ -40,13 +42,11 @@ class DiaryCreateView(APIView):
             chat_room = ChatRoom.objects.get(id=chat_room_id)
             conversation = chat_room.get_conversation()
 
-            summary = generate_summary(conversation) #summary 변수에 요약내용 들어가있음
-            image_generator = ImageGenAPI(
-                os.getenv("BING_SESSION_ID")
-            )
-            img_url = image_generator.get_images(summary)
+            summary = generate_summary(conversation)  # summary 변수에 요약내용 들어가있음
+            image_generator = ImageGenAPI(os.getenv("BING_SESSION_ID"))
 
-            #img_url = generate_image(summary)
+            img_url = image_generator.get_images(summary)  # 비동기 호출
+
             capture_url = chat_room.image_url
 
             diary = Diary.objects.create(

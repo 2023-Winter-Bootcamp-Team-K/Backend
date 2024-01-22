@@ -40,10 +40,7 @@ class Error(Enum):
 class ImageGenAPI:
     TIMEOUT = 128
 
-    def __init__(
-        self,
-        auth_cookie: str,
-    ):
+    def __init__(self,auth_cookie: str):
         self.session = httpx.AsyncClient(headers=HEADERS, cookies={"_U": auth_cookie}) #session ID가져오는듯?
 
     async def get_images(self, prompt):
