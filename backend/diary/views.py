@@ -40,8 +40,13 @@ class DiaryCreateView(APIView):
             chat_room = ChatRoom.objects.get(id=chat_room_id)
             conversation = chat_room.get_conversation()
 
-            summary = generate_summary(conversation)
-            img_url = generate_image(summary)
+            summary = generate_summary(conversation) #summary 변수에 요약내용 들어가있음
+            image_generator = ImageGenAPI(
+                os.getenv("BING_SESSION_ID")
+            )
+            img_url = image_generator.get_images(summary)
+
+            #img_url = generate_image(summary)
             capture_url = chat_room.image_url
 
             diary = Diary.objects.create(
