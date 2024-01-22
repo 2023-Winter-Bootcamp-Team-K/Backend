@@ -193,3 +193,5 @@ migrations
 .idea/
 /.idea
 
+grafana.prod.ini
+

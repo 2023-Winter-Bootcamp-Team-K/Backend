@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 20s
+  scrape_timeout: 10s
+
+scrape_configs:  #Prometheus가 어떤 대상(target)으로부터 메트릭을 수집(scrape)할 것인지를 정의
+  # cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: [ 'node-exporter:9100' ]
+
+  # Backend
+  - job_name: 'backend'
+    static_configs:
+      - targets: ['backend:8000']
+
+  # Backend Replica
+  - job_name: 'backend-rep'
+    static_configs:
+      - targets: ['backend-rep:8001']
