@@ -82,7 +82,6 @@ class ChatConsumer(WebsocketConsumer):
             logger.info(res)
             # 1. 첫 대화 시작
             if event == "conversation_start":
-
                 # 기분 room에 추가
                 mood = data.get("mood")
                 if mood == None:
@@ -106,9 +105,10 @@ class ChatConsumer(WebsocketConsumer):
 
                 self.add_answer(answer=None)
                 self.add_question(question=question_content)
-                #print(self.conversation)
+
             # 2. 음성 대답
             elif event == "user_answer":
+                print(self.present_question.id)
                 # base64 디코딩
                 audio_blob = data["audioBlob"]
                 audio_data = base64.b64decode(audio_blob)
@@ -122,7 +122,6 @@ class ChatConsumer(WebsocketConsumer):
 
                 # 비동기 태스크 실행
                 upload_task = upload_audio_to_s3_task.delay(binary_audio_data)
-
 
                 # 비동기 작업 실행
                 task = speech_to_text_task.delay(audio_data)
@@ -235,8 +234,9 @@ class ChatConsumer(WebsocketConsumer):
         # GPTQuestion 객체를 생성하고 데이터베이스에 저장
         question = GPTQuestion.objects.create(content=messages, chatroom_id=chatroom)
         question.save()
+        self.present_question = question
 
-        
+
     def child_conversation(self, content):
         messages = ""
         for index, chunk in enumerate(content):
@@ -318,14 +318,13 @@ class ChatConsumer(WebsocketConsumer):
         if finish_reason is None:
             finish_reason = "incomplete"
         self.send(json.dumps({"event": "conversation",
-                              "data": {"character": "quokka", "message": message, "finish_reason": finish_reason}}))
+                              "data": { "character": "quokka", "message": message, "finish_reason": finish_reason}}))
 
     def user_text_send(self, message,finish_reason):
         if finish_reason is None:
             finish_reason = "incomplete"
         self.send(json.dumps({"event": "conversation",
-
-                              "data": {"character": "child", "message": message, "finish_reason": finish_reason}}))
+                              "data": { "character": "child", "message": message, "finish_reason": finish_reason}}))
 
     def end_conversation(self):
         # 대화 요약 생성
@@ -373,15 +372,14 @@ class ChatConsumer(WebsocketConsumer):
         image_url = response.data[0].url
         return image_url
 
-
     def on_task_completion(self, result, audio_file_url):
         text_result = result.get(timeout=10)  # 결과를 기다림
         self.child_conversation(text_result)
         self.add_answer(text_result)
-
+        self.save_user_answer(question=self.present_question, content=text_result, url=audio_file_url)
         # STT 결과를 기반으로 후속 처리 진행
         question = self.continue_conversation(self.chatroom)  # 실패지점 !
 
         self.audio_send(question)
         self.add_question(question=question)
-        self.save_user_answer(question=self.present_question, content=text_result, url=audio_file_url)
+
