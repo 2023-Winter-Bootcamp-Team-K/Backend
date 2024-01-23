@@ -10,6 +10,7 @@ from .models import Diary
 from django.http import Http404
 from .utils import *
 from apps.models import ChatRoom
+from .tasks import generate_image_task
 
 
 class DiaryCreateView(APIView):
@@ -37,19 +38,18 @@ class DiaryCreateView(APIView):
             return Response({"status": "400", "message": "유효하지 않은 mood 값입니다"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            chat_room = ChatRoom.objects.get(id=chat_room_id)
+            chat_room = ChatRoom.objects.get(id=chat_room_id) #ChatRoom에서 대화내용 가져옴
             conversation = chat_room.get_conversation()
 
             summary = generate_summary(conversation)
-            img_url = generate_image(summary)
-            capture_url = chat_room.image_url
+            generate_image_task.delay(chat_room_id, summary)  # 비동기적으로 작업 실행
+            capture_url = chat_room.image_url #chat_room에서 셀카찍은 이미지 url가져옴.
 
             diary = Diary.objects.create(
                 user=request.user,
                 chat_room=chat_room,
                 mood=mood,
                 content=summary,
-                img_url=img_url,
                 capture_url=capture_url
             )
 
@@ -64,6 +64,7 @@ class DiaryCreateView(APIView):
 
         except ChatRoom.DoesNotExist:
             return Response({"status": "404", "message": "채팅방을 찾을 수 없습니다"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class DiaryView(APIView):
