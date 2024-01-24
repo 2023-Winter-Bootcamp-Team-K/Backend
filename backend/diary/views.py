@@ -105,7 +105,8 @@ class DiaryListView(APIView):
                 "diaryId": str(diary.id),
                 "imageURL": diary.img_url,
                 "created_at": diary.created_at.strftime("%Y-%m-%d"),
-                "mood": diary.mood
+                "mood": diary.mood,
+                "chat_room_id": diary.chat_room.id
             }
             for diary in diary_list
         ]
