@@ -30,7 +30,8 @@ def generate_image(summary):
 
     response = client.images.generate(
         model="dall-e-3",
-        prompt=summary,
+        prompt="너무 즐거운 날이었다! 아침에 아빠와 산책을 하고 나무 위에서 동물들을 봤어요. 점심에는 공원에서 친구들과 피크닉도 했어요! 행복한 하루였어요! 🌳🌻🐿️🌳🍎 #즐거운하루 #피크닉 #동물들 #산책 #행복한아이 #사진일기. 이 내용을 바탕으로 아이가 그린 것 처럼 이미지 만들어줘 글을 넣지 말아줘.",
+        # prompt=f"{summary}. 이거를 아이가 그린 그림일기 처럼 만들어줘",
         size="1024x1024",
         quality="standard",
         n=1,
