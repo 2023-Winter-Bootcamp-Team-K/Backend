@@ -10,7 +10,8 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # gpt한테 요약 요청
 def generate_summary(content):
     content_str = "\n".join(content)
-    summary_request = ('You have to write a picture diary based on the conversation. It\'s going to be in your child\'s picture diary. Please write 180 characters or less. And you only speak in Korean')
+    summary_request = (
+        'From now on, you will write child\'s diary instead of child. The content of diary must be the summarize of the conversation you had, with the child and write it as a diary. And the conditions of the diary are 1.It must be at least 160 characters and no more than 180 characters. 2.The sentences in the diary should end with "~했다" or "~했어." 3.Write in the handwriting style of a child aged 7 to 10 years. 4.The child is of South Korean nationality. 5.Do not include a greeting in the summary. Please follow these conditions when making a diary.')
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -30,8 +31,7 @@ def generate_image(summary):
 
     response = client.images.generate(
         model="dall-e-3",
-        prompt="너무 즐거운 날이었다! 아침에 아빠와 산책을 하고 나무 위에서 동물들을 봤어요. 점심에는 공원에서 친구들과 피크닉도 했어요! 행복한 하루였어요! 🌳🌻🐿️🌳🍎 #즐거운하루 #피크닉 #동물들 #산책 #행복한아이 #사진일기. 이 내용을 바탕으로 아이가 그린 것 처럼 이미지 만들어줘 글을 넣지 말아줘.",
-        # prompt=f"{summary}. 이거를 아이가 그린 그림일기 처럼 만들어줘",
+        prompt=f'{summary}. Please create an illustration based on the following summary: This summary summarizes the conversation between you and the baby.Additionally I would like to recreate an image I previously generated using seed number 3129831613. The image should maintain the same style and characteristics as the one produced with the given seed number. While satisfying these conditions  Generate a cute and lovely image that is suitable for a child\'s picture diary. And thier ages are 4 ~ 6. If there are people in the drawing, please depict them with a light apricot-colored skin tone (#fdece2) and draw black or dark brown hair. The most important thing is do not include any texts in image. ',
         size="1024x1024",
         quality="standard",
         n=1,

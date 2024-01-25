@@ -17,6 +17,14 @@ class Diary(models.Model):
         (ANGRY, 'Angry'),
     ]
 
+    IMAGE_STATUS_CHOICES = [
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    image_status = models.CharField(max_length=10, choices=IMAGE_STATUS_CHOICES, default='processing')
+
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, null=True)
