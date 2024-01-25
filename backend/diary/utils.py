@@ -31,7 +31,14 @@ def generate_image(summary):
 
     response = client.images.generate(
         model="dall-e-3",
-        prompt=f'{summary}. Please create an illustration based on the following summary: This summary summarizes the conversation between you and the baby.Additionally I would like to recreate an image I previously generated using seed number 3129831613. The image should maintain the same style and characteristics as the one produced with the given seed number. While satisfying these conditions  Generate a cute and lovely image that is suitable for a child\'s picture diary. And thier ages are 4 ~ 6. If there are people in the drawing, please depict them with a light apricot-colored skin tone (#fdece2) and draw black or dark brown hair. The most important thing is do not include any texts in image. ',
+        prompt=f'{summary}'
+               f'From now on, you will be drawing illustrations to be included in a child\'s picture diary. Please adhere to the following conditions: '
+               f'1.Draw the illustration based on the summary provided. '
+               f'2.Create an illustration that suits a child\'s picture diary. '
+               f'3.Refer to seed number "3129831613" and draw in a similar style. '
+               f'4.If there are human illustrations, color the skin in #fdece2. '
+               f'5.Do not include any text in the illustration. '
+               f'I would like to recreate an image I previously generated using seed number "3129831613". The image should maintain the same style and characteristics as the one produced with the given seed number',
         size="1024x1024",
         quality="standard",
         n=1,
