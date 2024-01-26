@@ -17,6 +17,17 @@ class Diary(models.Model):
         (ANGRY, 'Angry'),
     ]
 
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, null=True)
+    content = models.TextField() # 일기 내용 = 요약 내용
+    image_url = models.CharField(max_length=500, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    deleted_at = models.DateTimeField(null=True)
+    mood = models.CharField(max_length=10, choices=MOOD_CHOICES)
+    capture_url = models.CharField(max_length=500, null=True, blank=True)
+
     IMAGE_STATUS_CHOICES = [
         ('processing', 'Processing'),
         ('completed', 'Completed'),
@@ -25,13 +36,3 @@ class Diary(models.Model):
 
     image_status = models.CharField(max_length=10, choices=IMAGE_STATUS_CHOICES, default='processing')
 
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, null=True)
-    content = models.TextField() # 일기 내용 = 요약 내용
-    img_url = models.CharField(max_length=500, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-    deleted_at = models.DateTimeField(null=True)
-    mood = models.CharField(max_length=10, choices=MOOD_CHOICES)
-    capture_url = models.CharField(max_length=500, null=True, blank=True)

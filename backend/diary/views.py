@@ -73,8 +73,19 @@ class DiaryView(APIView):
         try:
             diary = Diary.objects.get(pk=pk)
             chat_room_id = diary.chat_room.id if diary.chat_room else None
+
+            if diary.image_status == 'processing':
+                message = "이미지 생성 중입니다."
+                image_url = None
+            elif diary.image_status == 'completed':
+                message = "일기 조회 성공"
+                image_url = diary.image_url
+            else:  # diary.image_status == 'failed' 또는 다른 상태
+                message = "이미지 생성 실패"
+                image_url = None
+
         except Diary.DoesNotExist:
-            # 일기가 아직 준비되지 않았음을 나타내는 응답
+            # 일기가 아직 데이터베이스에 없는 경우, 생성 중임을 알림
             return Response({
                 "status": "200",
                 "message": "일기가 생성 중 입니다."
@@ -82,17 +93,16 @@ class DiaryView(APIView):
 
         diary_data = {
             "status": "200",
-            "message": "일기 조회 성공",
+            "message": message,
             "diaryContent": diary.content,
             "created_at": diary.created_at.strftime("%Y-%m-%d"),
-            "imageURL": diary.img_url,
+            "imageURL": image_url,
             "username": diary.user.username,
             "captureURL": diary.capture_url,
             "mood": diary.mood,
-            "chat_room_id": chat_room_id
+            "chat_room_id": chat_room_id,
         }
         return Response(diary_data)
-
 class DiaryListView(APIView):
     @swagger_auto_schema(
         operation_id="일기 일정 조회"
