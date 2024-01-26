@@ -31,7 +31,7 @@ def generate_image(summary):
 
     response = client.images.generate(
         model="dall-e-3",
-        prompt=f'{summary}'
+        prompt=f'summary : {summary}'
                f'From now on, you will be drawing illustrations to be included in a child\'s picture diary. Please adhere to the following conditions: '
                f'1.Draw the illustration based on the summary provided. '
                f'2.Create an illustration that suits a child\'s picture diary. '
