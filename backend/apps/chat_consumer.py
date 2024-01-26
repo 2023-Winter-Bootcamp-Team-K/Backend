@@ -162,7 +162,12 @@ class ChatConsumer(WebsocketConsumer):
             self.conversation.append(
                 {
                     "role": "user",
-                    "content": "'" + answer + "'" + " is my answer, and you give me a one question.You will talk to the child. Your purpose is to find out what the child is thinking."
+                    "content": "'" + answer + "'" + " is my answer, and you give me a one question."
+                                "You will talk to the 10 to 13 years of child. "
+                                "The purpose of our conversation is to find out how the child spent their day and what emotions they experienced."
+                                "You should offer a follow-up question that aligns with the context of the child's response. "
+                                "Additionally, you should express ample empathy in response to the child's answers. "
+                                "Remember, you can only ask one question at a time."
                 }
             )
         else:
@@ -290,9 +295,14 @@ class ChatConsumer(WebsocketConsumer):
         self.conversation = [
             {
                 "role": "system",
-                "content": 'My name is ' + user.username + ' and My age is ' + str(
-                    user.age) + ' and My gender is ' + user.gender + 'and My mood is ' + mood + 'With these conditions, from now on, you will have a conversation with a child. The purpose of your conversation with a child is to find out how child spent child\'s day and how child\'s felt. '
-                                                                                                'You should ask him simple, clear questions, and use a soft, friendly tone. And when it\'s your turn to talk, you can only ask a maximum of one question. When you get to know the details of your child\'s daily schedule and feelings, ask him if it\'s okay to wrap up the conversation. You only speak Korean'
+                "content": 'My name is ' + user.username + ' and My age is ' + str(user.age) + ' and My gender is ' + user.gender + 'and My mood is ' + mood + '.'
+                           'With these conditions, from now on, you will have a conversation with a child. '
+                            'The child is Korean and age is between  10 to 13. '
+                            'The purpose of your conversation with a child is to find out how child spent child\'s day and how child\'s felt. '
+                            'You should ask him simple, clear questions, and use a soft, friendly tone.'
+                             "You should offer a follow-up question that aligns with the context of the child's response."
+                             "Additionally, you should express ample empathy in response to the child's answers."
+                             "Remember, you can only ask one question at a time."
             },
         ]
 
