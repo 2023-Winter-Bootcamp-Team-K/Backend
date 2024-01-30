@@ -20,7 +20,11 @@ def generate_image_task(chat_room_id, summary):
     try:
         response = client.images.generate(
             model="dall-e-3",
-            prompt=summary,
+            prompt=f'{summary} You must draw an illustration based on this summary.'
+                   f'You must draw this illustration cute and lovely.'
+                   f'You must refer to seed number 3129831613 and draw in a similar style.'
+                   f'If there are human illustrations, you must color the skin in #fdece2.'
+                   f'You never put any text in the illustration.',
             size="1024x1024",
             quality="standard",
             n=1,
