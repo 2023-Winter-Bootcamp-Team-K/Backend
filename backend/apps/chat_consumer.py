@@ -162,7 +162,13 @@ class ChatConsumer(WebsocketConsumer):
             self.conversation.append(
                 {
                     "role": "user",
-                    "content": "'" + answer + "'" + " is my answer, and you give me a one question.You will talk to the child. Your purpose is to find out what the child is thinking."
+                    "content": "'" + answer + "'" + " is my answer, and you give me a one question."
+                    "The purpose of our conversation is to find out how the child spent their day and what emotions they experienced."
+                    "You should offer only one follow-up question that aligns with the context of the child's response. "
+                    "Additionally, You should express enough empathy for every child's answer."
+                    "You have to talk in Korean."
+                    'Use informal language.'
+                    "Remember, you can only ask one question at a time."
                 }
             )
         else:
@@ -268,13 +274,11 @@ class ChatConsumer(WebsocketConsumer):
                 f"안녕 , {user_name}아 오늘 날씨 어땠어?",
                 f"안녕 {user_name}아 뭐하다가 이제왔어? 기다렸잖아!!",
                 f"안녕, {user_name}아 보고싶었어. 너는 어땠어?",
-                "안녕, 오늘도 재밌게 놀 준비됐어? 목소리 크게!!!!",
-                "오늘 힘든 일은 없었어?",
+                "안녕, 오늘도 재밌게 놀 준비됐어?",
+                "오늘 특별한 일 없었어?",
                 "오늘 뭐하고 놀았어?",
-                "오늘 친구들이랑 뭐하고 놀았어?",
                 "오늘 하루 어땠어?",
-                "Hi? 영어로 안녕이라는 뜻이야!",
-                f"{user_name}이 오늘 입은 옷 예쁘다! 좋은일 있었어?",
+                f"{user_name}이 오늘 입은 옷 예쁘다!",
             ]
 
             question = random.choice(basic_questions_list)
@@ -290,9 +294,15 @@ class ChatConsumer(WebsocketConsumer):
         self.conversation = [
             {
                 "role": "system",
-                "content": 'My name is ' + user.username + ' and My age is ' + str(
-                    user.age) + ' and My gender is ' + user.gender + 'and My mood is ' + mood + 'With these conditions, from now on, you will have a conversation with a child. The purpose of your conversation with a child is to find out how child spent child\'s day and how child\'s felt. '
-                                                                                                'You should ask him simple, clear questions, and use a soft, friendly tone. And when it\'s your turn to talk, you can only ask a maximum of one question. When you get to know the details of your child\'s daily schedule and feelings, ask him if it\'s okay to wrap up the conversation. You only speak Korean'
+                "content": 'My name is ' + user.username + ' and My age is ' + str(user.age) + ' and My gender is ' + user.gender + 'and My mood is ' + mood + '.'
+                    'With these conditions, from now on, you will have a conversation with a child.'
+                    'The purpose of your conversation with a child is to find out how child spent child\'s day and how child\'s felt. '
+                    'You should ask him simple, clear questions, and use a soft, friendly tone.'
+                    "You should offer only one follow-up question that aligns with the context of the child's response."
+                    "You have to talk in Korean."
+                    'Use informal language.'
+                    "Additionally, you should express enough empathy for every child's answer."
+                    "Remember, you can only ask one question at a time."
             },
         ]
 
